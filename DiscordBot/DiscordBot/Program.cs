@@ -26,6 +26,7 @@ namespace DiscordBot
         {
             var _config = new DiscordSocketConfig { MessageCacheSize = 100 };
             client = new DiscordSocketClient(_config);
+            commands = new CommandService();
 
             services = new ServiceCollection().BuildServiceProvider();
 
@@ -38,7 +39,29 @@ namespace DiscordBot
                 return Task.FromResult(0);
             };
 
+            // wait infinity
             await Task.Delay(-1);
+        }
+
+        // HandleCommand呼び出し
+        public async Task InstallCommands()
+        {
+            client.MessageReceived += HandleCommand;
+            await commands.AddModulesAsync(Assembly.GetEntryAssembly());
+        }
+
+        //よくわかんないけど...
+        public async Task HandleCommand(SocketMessage messageParam)
+        {
+            var message = messageParam as SocketUserMessage;
+            if (message == null) return;
+            int argPos = 0;
+
+            if (!(message.HasCharPrefix('!', ref argPos) || message.HasMentionPrefix(client.CurrentUser, ref argPos))) return;
+            var context = new CommandContext(client, message);
+            var result = await commands.ExecuteAsync(context, argPos, services);
+            if (!result.IsSuccess)
+                await context.Channel.SendMessageAsync(result.ErrorReason);
         }
     }
 }
