@@ -7,16 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Test : ModuleBase
+public class LoLCommand : ModuleBase
 {
-    // !say hello -> hello
-    [Command("say"), Summary("Echos a message")]
-    public async Task Say([Remainder, Summary("The text to echo")] string echo)
-    {
-        await ReplyAsync(echo);
-    }
-
-
     // !group -> x(x = amount)
     // !join -> join to group
     static int playerAmount;
