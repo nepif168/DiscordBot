@@ -8,6 +8,7 @@ using Discord.WebSocket;
 using Discord.Commands;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using System.IO;
 
 namespace DiscordBot
 {
@@ -20,17 +21,24 @@ namespace DiscordBot
 
         // Main => MainAsync
         static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
-
+        
         // Main
         public async Task MainAsync()
         {
             var _config = new DiscordSocketConfig { MessageCacheSize = 100 };
             client = new DiscordSocketClient(_config);
             commands = new CommandService();
-
+            
             services = new ServiceCollection().BuildServiceProvider();
 
-            await client.LoginAsync(TokenType.Bot, "bot token");
+            string path = Directory.GetCurrentDirectory();
+            string botToken = File.ReadAllText(Path.Combine(path, "BotToken.txt"));
+            Console.WriteLine(Path.Combine(path, "BotToken.txt"));
+            Console.WriteLine(botToken);
+
+            await InstallCommands();
+
+            await client.LoginAsync(TokenType.Bot, botToken);
             await client.StartAsync();
 
             client.Ready += () =>
