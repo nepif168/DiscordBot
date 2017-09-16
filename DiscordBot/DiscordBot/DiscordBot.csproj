@@ -86,7 +86,7 @@
   <ItemGroup>
     <Compile Include="Commands\CommandModules.cs" />
     <Compile Include="Commands\LoLCommand.cs" />
-    <Compile Include="Commands\TwitterCommand.cs" />
+    <Compile Include="Commands\InfomationGathering.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
